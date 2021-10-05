@@ -18,29 +18,35 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/", (req, res)=>{
+  let date = new Date();
+  date.setMinutes(date.getMinutes()-3);
+  
+  return res.json({
+    'unix': date.getTime(), 
+    'utc': date.toUTCString()
+  });  
 });
 
-app.get("/api/:date_string?", function (req, res) {
-  var date_string = req.params.date_string;
-  var date = new Date(date_string);
+app.get("/api/:date", (req, res)=>{
+  let resultDate='';
 
-  if (date_string == undefined) {
-    date = new Date();
-  }
+  let inputDate = new Date(req.params.date);
 
-  if (date.toString() == "Invalid Date") {
-    var numberInput = new Date(parseInt(date_string));
-    if (numberInput.toString() == "Invalid Date") {
-      res.json({error: "Invalid Date"});
-    } else {
-      res.json({unix: numberInput.getTime(), natural: numberInput.toDateString()});
-    }
+  if(inputDate.toString() == "Invalid Date"){
+    //convert from unix date to normal date
+    inputDate = new Date(parseInt(req.params.date));
+    // console.log(inputDate, "Invalid Date");
   }
-  res.json({unix: date.getTime(), utc: date.toUTCString()});
+ 
+  if(inputDate.toString() == "Invalid Date") {
+    return res.json({error: "Invalid Date"});
+  } else {
+    resultDate = { unix: inputDate.getTime(), 
+    utc: inputDate.toUTCString() };
+    // console.log(resultDate);
+  }
+  return res.json(resultDate);
 });
 
 // listen for requests :)
