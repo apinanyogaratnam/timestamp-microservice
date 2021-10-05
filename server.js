@@ -20,7 +20,6 @@ app.get("/", function (req, res) {
 
 app.get("/api/", (req, res)=>{
   let date = new Date();
-  date.setMinutes(date.getMinutes()-3);
   
   return res.json({
     'unix': date.getTime(), 
