@@ -27,13 +27,18 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:date_string?", function (req, res) {
   var date_string = req.params.date_string;
   var date = new Date(date_string);
-  
+
   if (date_string == undefined) {
     date = new Date();
   }
 
   if (date.toString() == "Invalid Date") {
-    res.json({error: "Invalid Date"});
+    var numberInput = new Date(parseInt(date_string));
+    if (numberInput.toString() == "Invalid Date") {
+      res.json({error: "Invalid Date"});
+    } else {
+      res.json({unix: numberInput.getTime(), natural: numberInput.toDateString()});
+    }
   }
   res.json({unix: date.getTime(), utc: date.toUTCString()});
 });
